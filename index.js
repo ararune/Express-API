@@ -41,19 +41,15 @@ app.get('/posts', (req, res) => {
 
 // Post method to change email by user id
 app.post('/users/:id/email', (req, res) => {
-  const user = data.users.find((user) => user.id === parseInt(req.params.id));
-  if (!user) {
-    return res.status(404).send('User not found');
-  }
-  user.email = req.body.email;
-  fs.writeFile('./data.json', JSON.stringify(data), (err) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).send('Internal server error');
+    const user = data.users.find((user) => user.id === parseInt(req.params.id));
+    if (!user) {
+      return res.status(404).send('User not found');
     }
+    user.email = req.body.email;
+    saveData(data); // save updated data to disk
     res.send(user);
   });
-});
+  
 
 // Put method that allows creating a new post
 app.put('/posts', (req, res) => {
