@@ -9,11 +9,11 @@ http://localhost:3000/posts?startDate=2019-01-01T00:00:00.000Z&endDate=2019-01-0
 
 //Example POST request to create a post :
 http://localhost:3000/posts
-```json
+//JSON body : 
 {
   "title": "New Post Title",
   "body": "New Post Body",
   "user_id": 2
 }
-```
+
 ```
