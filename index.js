@@ -5,6 +5,11 @@ const data = require('./data.json');
 
 app.use(express.json());
 
+function saveData(data) {
+    const jsonString = JSON.stringify(data, null, 2);
+    fs.writeFileSync('./data.json', jsonString);
+  }
+  
 // Get user by id
 app.get('/users/:id', (req, res) => {
   const user = data.users.find((user) => user.id === parseInt(req.params.id));
@@ -52,26 +57,15 @@ app.post('/users/:id/email', (req, res) => {
 
 // Put method that allows creating a new post
 app.put('/posts', (req, res) => {
-  const user = data.users.find((user) => user.id === parseInt(req.body.userID));
-  if (!user) {
-    return res.status(404).send('User not found');
-  }
-  const post = {
-    id: data.posts.length + 1,
-    title: req.body.title,
-    body: req.body.body,
-    user_id: parseInt(req.body.userID),
-    last_update: new Date().toISOString(),
-  };
-  data.posts.push(post);
-  fs.writeFile('./data.json', JSON.stringify(data), (err) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).send('Internal server error');
-    }
-    res.send(post);
+    const { title, body, user_id } = req.body;
+    const last_update = new Date().toISOString();
+    const newPost = { id: data.posts.length + 1, user_id, title, body, last_update };
+    data.posts.push(newPost);
+    saveData(data); // save updated data to disk
+    res.send(newPost);
   });
-});
+  
+  
 
 app.listen(3000, () => {
   console.log('Server started on port 3000');
